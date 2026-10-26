@@ -6075,6 +6075,9 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
             if (!isUsingStaticIp) {
                 prov = IpManager.buildProvisioningConfiguration()
                             .withPreDhcpAction()
+                            // The MT6630 sometimes receives nothing on the first connection after
+                            // Wi-Fi starts; a reconnect fixes it. Give up on DHCP after 10 s, not 36.
+                            .withProvisioningTimeoutMs(10 * 1000)
                             .withApfCapabilities(mWifiNative.getApfCapabilities())
                             .build();
             } else {
